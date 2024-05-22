@@ -3,7 +3,7 @@ from .base import env  # noqa: E501
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-DEV_SECRET_KEY = env(
+SECRET_KEY = env(
     "DEV_DJANGO_SECRET_KEY",
     default="django-insecure-7s1m)m)#ogw5qcv3yq=wl9-k%#ggd@-470b!=^$h-e-62ul3)k",
 )
