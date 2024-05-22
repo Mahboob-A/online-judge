@@ -49,10 +49,7 @@ THIRD_PARTH_APPS = [
 ]
 
 LOCAL_APPS = [
-    "core_apps.judge_engine    "core_apps.result_producer",
-    "core_apps.code_exe_engine",
-    "core_apps.common",
-    "core_apps.rcee_poc",",
+    "core_apps.judge_engine",
 ]
 
 
