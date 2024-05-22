@@ -9,7 +9,7 @@
 
 # Online Judge - RCE Engine 
 
-Online Judge is an RCE Engine for coding platform like LeetCode, Hackerrank. 
+Online Judge is a RCE Engine for coding platform like LeetCode, Hackerrank. 
 
 Online Judge can execute C++, Python and Java code in secure container, compare code output with testcases and return appropriate response to the client. 
 
@@ -26,7 +26,7 @@ Online Judge is an extention PoC of another project AlgoCode - a DSA platfrom ju
 AlgoCode is a coding platfrom built in microservices architechture. To learn more about AlgoCode, please explore this repository: 
 [AlgoCode Backend](https://github.com/Mahboob-A/algocode-backend)
 
-This PoC of Online Judge can execute user codes and run test cases against the code output. 
+This Online Judge is a PoC for another Service of AlgoCode named as Remote Code Exectuion Engien [RCEE](https://github.com/Mahboob-A/rcee). The Judge can execute user codes and run test cases against the code output. 
 
 The Judge can handle the below events: 
 
@@ -38,8 +38,6 @@ The Judge can handle the below events:
     f. Segmentation Fault
 
 The Online Judge is a pure docker implementation and no other 3rd party API or service has been used. 
-
-
 
 
 
@@ -148,7 +146,7 @@ The container can handle any kind of `DoS Attack` like `fork bomb` and any other
 
 A new sibling container is spawn to execute the code.
 
-As the container is auto terminated within `5 seconds`, and only allocated `.5 cpu`, `300mb` of RAM with no `swap` available, hard limit of `nproc` is set to `50` and hard limit of `nofile` set to `50`, 
+As the container is auto terminated within `5 seconds`, and only allocated `.5 cpu`, `300mb` of RAM with no `swap` available, hard limit of `nproc` is set to `50` and hard limit of `nofile` is also set to `50`, 
 it can not run any heavily `process` or `descriptor` oriented tasks. 
 
 However, you can tweak the settings as per you need as well. 
