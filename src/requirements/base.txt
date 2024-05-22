@@ -3,3 +3,4 @@ docker==7.0.0
 django-environ==0.10.0
 djangorestframework==3.14.0
 django-cors-headers==3.14.0
+drf-yasg==1.21.5

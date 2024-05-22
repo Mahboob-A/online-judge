@@ -6,7 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'online_judge.settings')
+    # TODO change the settings file to prod in prod. 
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'online_judge.settings.dev')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
