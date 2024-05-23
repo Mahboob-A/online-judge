@@ -1,6 +1,5 @@
 # exec_engine.py | run rce engine locally without http request from here.
 
-import docker
 from django.http import JsonResponse
 
 # from .models import CodeSubmission
@@ -8,21 +7,19 @@ import tempfile
 import uuid
 import os, json, time, logging
 
-# from core_apps.judge_engine.file_data_processor import file_processor
-# from core_apps.judge_engine.containers import code_container
-# from core_apps.judge_engine.compare_testcases import compare_output_and_testcases
+from core_apps.judge_engine.file_data_processor import file_processor
+from core_apps.judge_engine.containers import code_container
+from core_apps.judge_engine.compare_testcases import compare_output_and_testcases
 
-from file_data_processor import file_processor 
-from containers import code_container
-from compare_testcases import compare_output_and_testcases
+
 
 # to test the RCE Engine Locally.
-# from core_apps.judge_engine.dummy_questions import (
-#     hello_world_with_num_data_problem,
-#     sum_of_a_b_problem,
-#     time_limit_exceed_problem,
-#     memory_limit_exceed_problem,
-# )
+from core_apps.judge_engine.dummy_questions import (
+    hello_world_with_num_data_problem,
+    sum_of_a_b_problem,
+    time_limit_exceed_problem,
+    memory_limit_exceed_problem,
+)
 
 
 logger = logging.getLogger(__name__)

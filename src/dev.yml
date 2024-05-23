@@ -8,14 +8,12 @@ services:
       dockerfile: ./docker/dev/django/Dockerfile 
     volumes: 
         - /var/run/docker.sock:/var/run/docker.sock 
-        # - /usr/bin/docker:/usr/bin/docker
         - .:/app:z 
-        - judge_data:/app/data 
+        # - judge_data:/app/user-codes
     ports:
         - "8000:8000"
     env_file: 
         - ./.envs/.dev/.django 
-    command: /start 
     networks: 
         - judge-network 
 
@@ -27,6 +25,6 @@ networks:
   judge-network: 
     driver: bridge 
 
-volumes:
-  judge_data: 
-    external: true 
+# volumes:
+#   judge_data: 
+#     external: true 

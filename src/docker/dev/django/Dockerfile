@@ -45,13 +45,14 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
 
 RUN curl -sSL https://get.docker.com/ | sh
 
-COPY ./docker/dev/django/start /start 
+COPY ./docker/dev/django/start.sh /app/docker/dev/django/start.sh 
 
-RUN sed -i 's/\r$//g' /start
+RUN sed -i 's/\r$//g' /app/docker/dev/django/start.sh
 
-RUN chmod +x /start 
+RUN chmod +x /app/docker/dev/django/start.sh
 
 COPY . ${APP_HOME}
 
-# ENTRYPOINT [ "./start" ]
+# ENTRYPOINT [ "sh", "/app/docker/dev/django/start.sh" ]
 
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

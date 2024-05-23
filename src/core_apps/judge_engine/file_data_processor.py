@@ -19,11 +19,11 @@ class FileDataProcessorHandler:
         """return the base-dir/user_codes directory"""
 
         # TODO change to django path in prod
-        # base_dir = settings.BASE_DIR
-        base_dir = os.getcwd()
+        base_dir = settings.BASE_DIR
+        # base_dir = os.getcwd()
         logger.info(f"base dir: {base_dir}")
 
-        user_code_dir = "user_codes"
+        user_code_dir = "user_files"
         user_code_base_dir = os.path.join(base_dir, user_code_dir)
         return user_code_base_dir
 
