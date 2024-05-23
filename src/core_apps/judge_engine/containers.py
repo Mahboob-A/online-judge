@@ -9,7 +9,8 @@ from docker.errors import (
     ImageLoadError,
 )
 
-from core_apps.judge_engine.exceptions import TimeLimitExceedException
+# from core_apps.judge_engine.exceptions import TimeLimitExceedException
+from exceptions import TimeLimitExceedException 
 
 
 logger = logging.getLogger(__name__)
@@ -116,7 +117,8 @@ class CodeContainerHandler:
         security_opt = ["seccomp=default"]
         try:
             cont = client.containers.run(
-                image="algocode/cpp-image:latest",
+                # image="algocode/cpp-image",
+                image="simple_cpp", 
                 volumes={
                     f"{user_file_parent_dir}/": {
                         "bind": "/user-codes/cpp/result",
@@ -154,6 +156,9 @@ class CodeContainerHandler:
             cont.reload()
             logs = cont.logs().decode("utf-8")
             status_code = result.get("StatusCode")
+            print('logs: ', logs)
+            print('status code: ', status_code)
+            print('attr: ', cont.attrs)
 
             # formatted data. as control here, the code compiled and run.
             data = self.__get_formated_data(status_code=status_code, logs=logs)
@@ -179,8 +184,10 @@ class CodeContainerHandler:
         except Exception as e:
             container_error_message = f"\nUnexpected Error Occurred: \n{str(e)}"
         finally:
-            cont.stop(timeout=0)
-            cont.remove()
+            # cont.stop(timeout=0)
+            # cont.remove()
+            pass 
+            
 
         end_time = self.__get_current_time()
         logger.info(
@@ -218,5 +225,19 @@ class CodeContainer(CodeContainerHandler):
         return container_error_message, data
 
 
-# object to import. 
+# object to import.
 code_container = CodeContainer()
+
+# def test(): 
+#     cont = client.containers.run(image="hello-world:latest", detach=True)
+
+#     cont.reload()
+#     logs = cont.logs().decode("utf-8")
+#     # status_code = result.get("StatusCode")
+#     print('logs: ', logs)
+#     # print('status code: ', status_code)
+
+#     print('attr: ', cont.attrs)
+
+
+# test()
