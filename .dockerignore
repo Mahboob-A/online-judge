@@ -8,6 +8,12 @@ __pycache__/
 .vscode
 .vscode/
 
+.idea
+venv
+venv/
+.gitignore
+htmlcov/
+
 user_codes/
 user-codes/
 user-files/

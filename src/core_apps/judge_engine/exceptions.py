@@ -1,4 +1,4 @@
-from docker.errors import ContainerError, DockerException
+from docker.errors import DockerException
 
 
 class TimeLimitExceedException(DockerException):

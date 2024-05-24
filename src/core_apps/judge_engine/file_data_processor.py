@@ -15,10 +15,26 @@ class FileDataProcessorHandler:
 
     # src/user_codes
 
-    def get_user_code_base_dir(self):
-        """return the base-dir/user_codes directory"""
+    def __get_user_code_base_dir(self):
+        """Return the base-dir/user_codes directory
 
-        base_dir = settings.BASE_DIR
+        Storage:
+            volume:
+                name: user_code_files
+
+        The below '$base_dir' is the volume mount for the Judge Container.
+        The volume mount of sibling container is specified at the module 'containers.py'.
+
+        Hence, everything is saved under 'base_dir' in the Judge Container, will be available at
+        the volume mount of sibling contianer.
+
+        Ex: Judge Container file path: /app/user-files/user_codes/lang/uuid/
+            Sibling Container file path for the same data: $volume_mount_of_sibling_container/user_codes/lang/uuid/
+        """
+
+        # this is the volume for the main Judge Container. see the docker compose file.
+        base_dir = "/app/user-files"
+
         logger.info(f"base dir: {base_dir}")
 
         user_code_dir = "user_files"

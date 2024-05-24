@@ -1,4 +1,6 @@
-import os, json, logging, time
+import logging, time
+
+from django.core.exceptions import ImproperlyConfigured
 
 import docker
 from docker.errors import (
@@ -15,6 +17,12 @@ from core_apps.judge_engine.exceptions import TimeLimitExceedException
 logger = logging.getLogger(__name__)
 
 client = docker.from_env()
+
+# try:
+#     from docker import from_env
+#     client = from_env()
+# except ImportError:
+#     raise ImproperlyConfigured("Docker library not installed. Please install 'docker'")
 
 
 class CodeContainerHandler:
@@ -116,10 +124,10 @@ class CodeContainerHandler:
         security_opt = ["seccomp=default"]
         try:
             cont = client.containers.run(
-                image="algocode/cpp-image:latest",
+                image="algocode/cpp:v1",
                 volumes={
-                    f"{user_file_parent_dir}/": {
-                        "bind": "/user_codes/cpp/result",
+                    "user_code_files": {
+                        "bind": "/user-codes-data",
                         "mode": "rw",
                     }
                 },

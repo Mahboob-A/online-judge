@@ -53,6 +53,6 @@ RUN chmod +x /app/docker/dev/django/start.sh
 
 COPY . ${APP_HOME}
 
-# ENTRYPOINT [ "sh", "/app/docker/dev/django/start.sh" ]
+ENTRYPOINT [ "sh", "/app/docker/dev/django/start.sh" ]
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
