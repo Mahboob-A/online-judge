@@ -117,13 +117,10 @@ class CodeContainerHandler:
         security_opt = ["seccomp=default"]
         try:
             cont = client.containers.run(
-                # image="algocode/cpp-image",
-                image="new_cpp:v1", 
-                # image="simple_cpp",
-                # image="cpp-vol-test:latest",
+                image="algocode/cpp:v1",
                 volumes={
                     "user_code_files": {
-                        "bind": "/user-codes",
+                        "bind": "/user-codes-data",
                         "mode": "rw",
                     }
                 },
@@ -159,9 +156,6 @@ class CodeContainerHandler:
             cont.reload()
             logs = cont.logs().decode("utf-8")
             status_code = result.get("StatusCode")
-            print('logs: ', logs)
-            print('status code: ', status_code)
-            print('attr: ', cont.attrs)
 
             # formatted data. as control here, the code compiled and run.
             data = self.__get_formated_data(status_code=status_code, logs=logs)
@@ -218,11 +212,10 @@ class CodeContainer(CodeContainerHandler):
               if try block is true, contains the user code run result, including any g++ errors.
               if no compilation error, the output is saved in the output.txt file.
         """
-        user_file_parent_dir = user_file_parent_dir.split("/app/user-files")
 
         # Run the container and get the result.
         container_error_message, data = self._run_container(
-            user_file_parent_dir=user_file_parent_dir[1], submission_id=submission_id
+            user_file_parent_dir=user_file_parent_dir, submission_id=submission_id
         )
 
         return container_error_message, data
@@ -231,28 +224,3 @@ class CodeContainer(CodeContainerHandler):
 # object to import.
 code_container = CodeContainer()
 
-# def test():
-#     cont = client.containers.run(image="hello-world:latest", detach=True)
-
-#     cont.reload()
-#     logs = cont.logs().decode("utf-8")
-#     # status_code = result.get("StatusCode")
-#     print('logs: ', logs)
-#     # print('status code: ', status_code)
-
-#     print('attr: ', cont.attrs)
-
-
-# test()
-
-
-def test_vol(): 
-    v = client.volumes.list()
-    print('v: ', v)
-    a = client.volumes.get("user_code_files")
-    print('\na: ', a)
-    print('volume name: ', a.name)
-    print('\n')
-    print('attr: ', a.attrs)
-
-test_vol()

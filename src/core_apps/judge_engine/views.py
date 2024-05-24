@@ -39,7 +39,7 @@ hello_world_with_num_data_problem = {
         "Hello World: 7",
         "Hello World: 8",
         "Hello World: 9",
-        "Hello World: 0",
+        "Hello World: 10",
     ],
 }
 
