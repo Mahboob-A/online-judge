@@ -15,39 +15,23 @@ class FileDataProcessorHandler:
 
     # src/user_codes
 
-    def __get_user_code_base_dir(self):
-        """Return the base-dir/user_codes directory
+    def get_user_code_base_dir(self):
+        """return the base-dir/user_codes directory"""
 
-        Storage:
-            volume:
-                name: user_code_files
-
-        The below '$base_dir' is the volume mount for the Judge Container.
-        The volume mount of sibling container is specified at the module 'containers.py'.
-
-        Hence, everything is saved under 'base_dir' in the Judge Container, will be available at
-        the volume mount of sibling contianer.
-
-        Ex: Judge Container file path: /app/user-files/user_codes/lang/uuid/
-            Sibling Container file path for the same data: $volume_mount_of_sibling_container/user_codes/lang/uuid/
-        """
-
-        # this is the volume for the main Judge Container. see the docker compose file.
-        base_dir = "/app/user-files" 
-
+        base_dir = settings.BASE_DIR
         logger.info(f"base dir: {base_dir}")
 
         user_code_dir = "user_codes"
         user_code_base_dir = os.path.join(base_dir, user_code_dir)
-        return user_code_base_dir, base_dir
+        return user_code_base_dir
 
-    def __get_user_code_base_dir_with_lang(self, lang: str):
+    def get_user_code_base_dir_with_lang(self, lang: str):
         """return the base-dir/user_codes/{lang} directory"""
 
-        user_code_base_dir, judge_volume_mount = self.__get_user_code_base_dir()
+        user_code_base_dir = self.get_user_code_base_dir()
         base_dir_with_lang = os.path.join(user_code_base_dir, lang)
 
-        return base_dir_with_lang, judge_volume_mount
+        return base_dir_with_lang
 
     def _process_write_data(
         self,
@@ -67,14 +51,10 @@ class FileDataProcessorHandler:
         success_message = "file-created"
 
         # lang path: base-dir/user_codes/lang/
-        main_lang_dir, judge_volume_mount  = self.__get_user_code_base_dir_with_lang(
-            lang=lang
-        )
+        main_lang_dir = self.get_user_code_base_dir_with_lang(lang=lang)
 
         # unique user main dir path: base-dir/user_codes/lang/uuid4
         main_user_file_dir = os.path.join(main_lang_dir, f"{submission_id}")
-        
-        print(f"Entrypoint of User's Unique Data Dir Judge Container Mount Point:  {main_user_file_dir}")
 
         try:
             # create the directories: base-dir/user_codes/lang/uuid4
@@ -189,7 +169,6 @@ class FileDataProcessorHandler:
             output_filepath,
             testcases_filepath,
             success_message,
-            judge_volume_mount,
         )
 
     def _process_del_user_dirs_files(self, filepath: str, submission_id: str):
@@ -291,7 +270,7 @@ class FileDataProcessor(FileDataProcessorHandler):
             # a tuple of data.
             return result
 
-# Object to process data 
+
 file_processor = FileDataProcessor()
 
 if __name__ == "__main__":
