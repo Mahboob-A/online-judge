@@ -12,11 +12,11 @@ from docker.errors import (
 )
 
 from core_apps.judge_engine.exceptions import TimeLimitExceedException
+from core_apps.judge_engine.singleton import SignletonMeta
 
 
 logger = logging.getLogger(__name__)
 
-client = docker.from_env()
 
 # try:
 #     from docker import from_env
@@ -25,8 +25,12 @@ client = docker.from_env()
 #     raise ImproperlyConfigured("Docker library not installed. Please install 'docker'")
 
 
+import requests
+
 class CodeContainerHandler:
     """Container Handler class to spawn docker container to execute user code."""
+    def __init__(self) -> None:
+        self.__client = docker.from_env()
 
     def __get_current_time(self):
         """Return current time to measure container runtime"""
@@ -62,7 +66,7 @@ class CodeContainerHandler:
             data = {
                 "status": "Segmentation Fault",
                 "status_code": status_code,
-                "error_message": logs,
+                "error_message": "Index Out of Bound (Core Dumped)",
                 "success_message": None,
             }
         else:
@@ -81,7 +85,7 @@ class CodeContainerHandler:
                         "status": "Compilation Error",
                         "status_code": status_code,
                         "error_message": logs[
-                            8
+                            12
                         ],  # only get the error messge from: (main.cpp: line number)
                         "success_message": None,
                     }
@@ -123,11 +127,11 @@ class CodeContainerHandler:
         ]
         security_opt = ["seccomp=default"]
         try:
-            cont = client.containers.run(
-                image="algocode/cpp:v1",
+            cont = self.__client.containers.run(
+                image="algocode/revamped-cpp:v1",
                 volumes={
                     "user_code_files": {
-                        "bind": "/user-codes-data",
+                        "bind": "/app/user-files",
                         "mode": "rw",
                     }
                 },
@@ -161,6 +165,8 @@ class CodeContainerHandler:
                 raise TimeLimitExceedException("Time Limit Exceed", status_code=124)
 
             cont.reload()
+            # stats_1 = cont.stats(stream=False)
+            # print(cont.attrs)
             logs = cont.logs().decode("utf-8")
             status_code = result.get("StatusCode")
 
@@ -199,7 +205,7 @@ class CodeContainerHandler:
         return container_error_message, data
 
 
-class CodeContainer(CodeContainerHandler):
+class CodeContainer(CodeContainerHandler, metaclass=SignletonMeta):
     """Container class to spawn docker container to execute user code."""
 
     def run_container(self, user_file_parent_dir: str, submission_id: str = None):

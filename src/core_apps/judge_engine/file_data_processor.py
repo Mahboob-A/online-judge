@@ -6,6 +6,7 @@ import shutil
 
 from django.conf import settings
 
+from core_apps.judge_engine.singleton import SignletonMeta
 
 logger = logging.getLogger(__name__)
 
@@ -23,31 +24,33 @@ class FileDataProcessorHandler:
                 name: user_code_files
 
         The below '$base_dir' is the volume mount for the Judge Container.
-        The volume mount of sibling container is specified at the module 'containers.py'.
+        The volume mount of sibling container is also same as the Main Judge Container.
 
         Hence, everything is saved under 'base_dir' in the Judge Container, will be available at
         the volume mount of sibling contianer.
 
         Ex: Judge Container file path: /app/user-files/user_codes/lang/uuid/
-            Sibling Container file path for the same data: $volume_mount_of_sibling_container/user_codes/lang/uuid/
+            Sibling Container file path for the same data: /app/user-files/user_codes/lang/uuid/
+            As both has the mount point name same. 
         """
 
-        # this is the volume for the main Judge Container. see the docker compose file.
+        # this is the volume mount for the main Judge Container as well as sibling contianer. 
+        # see the docker compose file for main judge container, and "containers" module for sibling container. 
         base_dir = "/app/user-files"
 
         logger.info(f"base dir: {base_dir}")
 
         user_code_dir = "user_files"
         user_code_base_dir = os.path.join(base_dir, user_code_dir)
-        return user_code_base_dir, base_dir
+        return user_code_base_dir
 
     def __get_user_code_base_dir_with_lang(self, lang: str):
         """return the base-dir/user_codes/{lang} directory"""
 
-        user_code_base_dir, judge_volume_mount = self.__get_user_code_base_dir()
+        user_code_base_dir = self.__get_user_code_base_dir()
         base_dir_with_lang = os.path.join(user_code_base_dir, lang)
 
-        return base_dir_with_lang, judge_volume_mount
+        return base_dir_with_lang
 
     def _process_write_data(
         self,
@@ -67,7 +70,7 @@ class FileDataProcessorHandler:
         success_message = "file-created"
 
         # lang path: base-dir/user_codes/lang/
-        main_lang_dir, judge_volume_mount = self.__get_user_code_base_dir_with_lang(
+        main_lang_dir = self.__get_user_code_base_dir_with_lang(
             lang=lang
         )
 
@@ -190,8 +193,7 @@ class FileDataProcessorHandler:
             input_filepath,
             output_filepath,
             testcases_filepath,
-            success_message,
-            judge_volume_mount,
+            success_message
         )
 
     def _process_del_user_dirs_files(self, filepath: str, submission_id: str):
@@ -228,7 +230,7 @@ class FileDataProcessorHandler:
             return False
 
 
-class FileDataProcessor(FileDataProcessorHandler):
+class FileDataProcessor(FileDataProcessorHandler, metaclass=SignletonMeta):
     """Write user code in service container file system.
     The image takes the files from service container to compile the code
     """

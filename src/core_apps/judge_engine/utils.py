@@ -1,5 +1,4 @@
-
-# file werite and delete test 
+# file werite and delete test
 
 import os
 import shutil
@@ -136,3 +135,82 @@ else:
 
 
 print("parent dir: ", parent_dir)
+
+
+# #Use the above API for full implementation.
+# class CodeSubmitSimpleImplementation(APIView):
+#     """A simple approach to test the code submission without creating the files beforehand.
+#     In this use case, the host volume creation also handled by docker.
+#     The volume created in host by docker has permission only of docker, hence the files can not be deleted by host user.
+
+#     The time is also same as the robust implementation of creating files beforehand. Infact, this method takes one second more
+#     one average than the robust implementation.
+
+#     """
+
+# def post(self, request):
+#     start = time.time()
+
+#     lang = request.data.get("lang")
+#     code = request.data.get("code")
+#     input_data = request.data.get("input")
+
+#     print("Code: ", code)
+
+#     client = from_env()
+
+#     file_path = f"user-files/{random.randint(10, 100000)}"
+#     curr_path = os.getcwd()
+#     print("curr path: ", os.getcwd())
+#     new_file_path = os.path.join(curr_path, file_path)
+
+#         # About image: simple_cpp
+#         # Image name, just the g++ compiler.
+#         # create a Dockerfile with this only: FROM gcc:12.3.0
+#         # and create an image using it and name it as "simple_cpp"
+#         try:
+#             # Create and start a container
+#             container = client.containers.run(
+#                 "simple_cpp",
+#                 volumes={
+#                     f"{new_file_path}/": {
+#                         "bind": "/user-files",
+#                         "mode": "rw",
+#                     }
+#                 },
+#                 command=[
+#                     "sh",
+#                     "-c",
+#                     f'echo "{code}" > /user-files/code.cpp && echo "{input_data}" > /user-files/input.txt && g++ /user-files/code.cpp -o /user-files/code && /user-files/code < /user-files/input.txt > /user-files/output.txt',
+#                 ],
+#                 detach=True,
+#             )
+
+# Wait for the container to finish
+# result = container.wait()
+# print("result: ", result)
+
+# # Get the logs (output)
+# output = container.logs().decode("utf-8")
+
+# with open(f"{new_file_path}/output.txt", "r") as f:
+#     data = f.read()
+#     print("data: ", data)
+
+# # Remove the container
+# container.remove()
+
+# end = time.time()
+
+# print("total time taken: ", end - start)
+# # Return output to the user
+# return JsonResponse({"output": output})
+
+#         except docker.errors.ContainerError as e:
+#             print(f"Error: {e}")
+#             return JsonResponse({"error": str(e)}, status=500)
+#         except Exception as e:
+#             print(f"Unexpected error: {e}")
+#             return JsonResponse({"error": "An unexpected error occurred"}, status=500)
+
+#         # return JsonResponse({"error": "Method not allowed"}, status=405)
