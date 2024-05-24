@@ -17,7 +17,6 @@ from core_apps.judge_engine.singleton import SignletonMeta
 
 logger = logging.getLogger(__name__)
 
-client = docker.from_env()
 
 # try:
 #     from docker import from_env
@@ -30,6 +29,8 @@ import requests
 
 class CodeContainerHandler:
     """Container Handler class to spawn docker container to execute user code."""
+    def __init__(self) -> None:
+        self.__client = docker.from_env()
 
     def __get_current_time(self):
         """Return current time to measure container runtime"""
@@ -126,7 +127,7 @@ class CodeContainerHandler:
         ]
         security_opt = ["seccomp=default"]
         try:
-            cont = client.containers.run(
+            cont = self.__client.containers.run(
                 image="algocode/revamped-cpp:v1",
                 volumes={
                     "user_code_files": {
