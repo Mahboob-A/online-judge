@@ -9,7 +9,7 @@
 
 # Online Judge - RCE Engine 
 
-Online Judge is a RCE Engine for coding platform like LeetCode, Hackerrank. 
+Online Judge is an RCE Engine for coding platform like LeetCode, Hackerrank. 
 
 Online Judge can execute C++, Python and Java code in secure container, compare code output with testcases and return appropriate response to the client. 
 
@@ -21,12 +21,12 @@ Online Judge can execute C++, Python and Java code in secure container, compare 
 
 ## General Information
 
-Online Judge is an extention PoC of another project AlgoCode - a DSA platfrom just like Leetcode. 
+Online Judge is an experiment to implement the Judge with [AlgoCode](https://github.com/Mahboob-A/algocode-backend) Platform a DSA platfrom just like Leetcode. 
 
 AlgoCode is a coding platfrom built in microservices architechture. To learn more about AlgoCode, please explore this repository: 
 [AlgoCode Backend](https://github.com/Mahboob-A/algocode-backend)
 
-This Online Judge is a PoC for another Service of AlgoCode named as Remote Code Exectuion Engien [RCEE](https://github.com/Mahboob-A/rcee). The Judge can execute user codes and run test cases against the code output. 
+Online Judge can execute user codes and run test cases against the code output. 
 
 The Judge can handle the below events: 
 
@@ -37,7 +37,9 @@ The Judge can handle the below events:
     e. Memory Limit Exceed 
     f. Segmentation Fault
 
-The Online Judge is a pure docker implementation and no other 3rd party API or service has been used. 
+*The Online Judge is a pure docker implementation and no other 3rd party API or service has been used.*
+
+
 
 
 
@@ -84,7 +86,7 @@ For Windows
 
 #### Create the docker image 
 
-**You must creat the below image in order to run the Judge successfully.**
+**You must creat the below image and volume in order to run the Judge successfully.**
 
 Go the the path to Dockerfile 
 
@@ -93,16 +95,54 @@ Go the the path to Dockerfile
 ```
 Run the command to create the required images 
 ```baah
-  docker build -t algocode/cpp-image . 
+  docker build -t algocode/revamped-cpp:v1 . 
 ```
+Make sure to add the "dot" at the end of the line. 
 
 
-#### Start the server
+#### Create the docker volume 
+The main Judge Container and the Sibling Containers use a Volume to 
+share data between them.
+
+Run the command to create the desired volume: 
 ```bash 
-  python manage.py runserver 
+  docker volume create user_code_files
+``` 
+
+You need to create the volume as this volume will be managed 
+externally. 
+
+
+#### Run the Judge 
+Return to the `src` directory, and then run the bellow command to start the Judge. It will also run the development server. 
+
+For Linux/MacOS 
+```bash 
+  make docker-up 
 ```
 
-Now you are ready to send request to the API asper API reference below. 
+For Windows
+```bash 
+  docker compose -f dev.yml up --build -d --remove-orphans
+```
+
+Now you are ready to send request to the API asper API reference below. Wait for 5 seconds to propage the Judge before sending a request. 
+
+
+#### Stop the Judge
+To stop the Judge, run the below command. 
+
+For Linux/MacOS 
+```bash
+  make docker-down
+```
+
+For Windows
+```bash
+  docker compose -f dev.yml down
+```
+
+
 ## API Reference
 
 #### Submit Code for Execution 
@@ -119,7 +159,35 @@ Now you are ready to send request to the API asper API reference below.
 | `testcase` | `list[string]` | Testcase that should be compared to check th e answer of the code execution. |   
 
 
-All the code are pushed to the project as PR. Hence, you can view the work has been done in the closed PR of the project. Detailed explanation has been added to understand the PR. To learn more on API, please take a look at this PR: [add: API for testing the online judge #6](https://github.com/Mahboob-A/online-judge/pull/6)
+All the code are pushed to the project as PR. Hence, you can view the work has been done in the closed PR of the project. Detailed explanation has been added to understand the PR. To learn more on API, please take a look at this PR: [Judge API](https://github.com/Mahboob-A/online-judge/pull/6)
+
+
+## Judge Without API Call
+
+If you are just curious to test it locally without calling any API, 
+you can also do that. 
+
+Follow the below steps - 
+
+A. Clone This repository: [Judge without API Call](https://github.com/Mahboob-A/online-judge/tree/check-dnd-local)
+
+B. A step by step guideline has been outlined in the below mentioned PR, please follow along the PR to run the Judge without calling the API: [See the PR.](https://github.com/Mahboob-A/online-judge/pull/9) It's really well documented, I promise!
+
+
+
+
+## Troubleshoot
+
+If the Judge is not responsive, you can stop and restart the Judge using the commands mentioned in the Run Locally section. 
+
+If this didn't help, stop the Judge, go to `src/core_apps/judge_engine/containers.py`, add a print statement on `logs` and `status_code` after `line number 170 and 171`. 
+
+Run the Judge, and notedown the container ID using: `docker ps`. 
+
+Run `docker logs -f <container ID>` 
+
+And you will be able to see the Judge container's development server's output in your terminal. 
+
 ## FAQ
 
 #### What is the backend for this project 
@@ -131,22 +199,21 @@ The backend of this project is implemented with Django.
 Python 
 
 #### Why testcases and input are being passed from client 
-This is a PoC for AlgoCode - A DSA problem solving platform implemented in microservices architecture just like Leetcode.  
+This is a Revamped Implementation of Online Judge for AlgoCode - A DSA problem solving platform implemented in microservices architecture just like Leetcode.  
 
-This PoC simplifies to the code execution. If you just want a monolithic application to test how an secure code execution should happend with test cases comparison to generate a DSA platform like answer this is a handy tool. 
+This Judge simplifies to the code execution. If you just want a monolithic application to test how an secure code execution should happend with test cases comparison to generate a DSA platform like answer, this is a handy tool. 
 
-You can extend it to save the testcases and inputs in database. 
+This Judge is implemented in the [Remote Code Execution Engine](https://github.com/Mahboob-A/rcee) Service of the [AlgoCode](https://github.com/Mahboob-A/algocode-backend) Platform. 
 
-All these are implemented in AlgoCode, please refer to here. [AlgoCode](https://github.com/Mahboob-A/algocode-backend)
 
 #### How secure is the execution 
-The C++ code will be executed in a secure docker container. The container has no privileges and all other possible privileges has been dropped. 
+The C++ code will be executed in a secure docker container. The container has no privileges and all other possible privileges has been dropped.
 
 The container can handle any kind of `DoS Attack` like `fork bomb` and any other form of resource starvation attack. 
 
 A new sibling container is spawn to execute the code.
 
-As the container is auto terminated within `5 seconds`, and only allocated `.5 cpu`, `300mb` of RAM with no `swap` available, hard limit of `nproc` is set to `50` and hard limit of `nofile` is also set to `50`, 
+As the container is auto terminated within `5 seconds`, and only allocated `.5 cpu`, `300mb` of RAM with no `swap` available, hard limit of `nproc` is set to `50` and hard limit of `nofile` set to `50`, 
 it can not run any heavily `process` or `descriptor` oriented tasks. 
 
 However, you can tweak the settings as per you need as well. 
@@ -160,20 +227,20 @@ If you need immediate support of these languages, please do not hesitate to conn
 ## Future Improvements 
 Spawning new container and stop it and cleaning it is expensive process. Hence I am planning to optimize this use case and if the below are achieable, I will bring them in my future rolling of the Juddging engine. 
 
-##### Explore the BOTEK Estimation 
+#### Explore the BOTEK Estimation 
 As creating new contianers and deleting them are expensive process, maintain the container's state and execute the code in the contianer without stopping or closing them. 
 
 As the image of the container is very lightweight, we might be able to run concurrent `100+ containers` with `64 GB of RAM`, and `2 Core CPU`.   
 
 But the overhead here is not the number of containers, the overhead is networking and the bigger overhead is disk seek, as the judge needs to write the necessary files to the disk in order to mount it with the container, and again, delete them after the execution is successful. 
 
-##### The Optimation 
+#### The Optimation 
 If we constantly run 100+ contianers as per our above estimation, and we mount the user files directory dynamically before the code is executed, we can really mitigate almost `1.5/1.0 seconds of cold start` of the docker container. 
 
-In this design, we can dramatically increase the speed and efficiency of a `Synchronous` backend like Django and it would able to handle more concurrent requests with less time. 
+In this design, we can increase the speed and efficiency of a `Synchronous` backend like Django and it would able to handle more concurrent requests with less time. 
 
 
-##### My Plan 
+#### My Plan 
 Yes, I will implement this in my next release. In the future release, the Online Judge RCE Engine will be faster and mitigate the cold start of the docker container.  
 ## Screenshots
 
@@ -188,7 +255,7 @@ Yes, I will implement this in my next release. In the future release, the Online
 ##### Logging Level 
 ![Screenshot from 2024-05-22 12-28-42](https://github.com/Mahboob-A/online-judge/assets/109282492/9e6dd81a-f999-4ce8-86c7-a29cda510bc2)
 
-##### The architechture of AlgoCode 
+##### The architechture of [AlgoCode](https://github.com/Mahboob-A/algocode-backend) Platform.  
 ![Screenshot from 2024-05-21 13-22-07](https://github.com/Mahboob-A/online-judge/assets/109282492/96c4cda4-388f-417b-8f35-1bc75c0ed015)
 ## 🔗 Links
 
