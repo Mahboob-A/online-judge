@@ -9,8 +9,7 @@ from docker.errors import (
     ImageLoadError,
 )
 
-# from core_apps.judge_engine.exceptions import TimeLimitExceedException
-from exceptions import TimeLimitExceedException 
+from core_apps.judge_engine.exceptions import TimeLimitExceedException
 
 
 logger = logging.getLogger(__name__)
@@ -117,14 +116,13 @@ class CodeContainerHandler:
         security_opt = ["seccomp=default"]
         try:
             cont = client.containers.run(
-                image="algocode/cpp:v1",
+                image="algocode/cpp-image:latest",
                 volumes={
-                    "user_code_files": {
-                        "bind": "/user-codes-data",
+                    f"{user_file_parent_dir}/": {
+                        "bind": "/user-codes/cpp/result",
                         "mode": "rw",
                     }
                 },
-                environment=[f"user_file_parent_dir={user_file_parent_dir}"],
                 detach=True,
                 privileged=False,
                 network_disabled=True,
@@ -220,6 +218,5 @@ class CodeContainer(CodeContainerHandler):
         return container_error_message, data
 
 
-# object to import.
+# object to import. 
 code_container = CodeContainer()
-

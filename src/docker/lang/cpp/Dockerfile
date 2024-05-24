@@ -1,9 +1,9 @@
 FROM gcc:12.3.0 
 
-COPY . /code-data 
+COPY . /user-codes/cpp 
 
-WORKDIR /code-data 
+WORKDIR /user-codes/cpp 
 
-RUN chmod +x /code-data/script.sh 
+RUN chmod +x /user-codes/cpp/script.sh 
 
-ENTRYPOINT ["/code-data/script.sh"]
+ENTRYPOINT ["/user-codes/cpp/script.sh"]
