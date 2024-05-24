@@ -20,7 +20,10 @@ class FileDataProcessorHandler:
 
         # TODO change to django path in prod
         # base_dir = settings.BASE_DIR
-        base_dir = os.getcwd()
+        # base_dir = os.getcwd()
+        
+        # this is the volume for the main Judge Container. see the docker compose file.
+        base_dir = "/app/user-files/"  
         logger.info(f"base dir: {base_dir}")
 
         user_code_dir = "user_codes"

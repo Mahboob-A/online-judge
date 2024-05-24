@@ -118,13 +118,16 @@ class CodeContainerHandler:
         try:
             cont = client.containers.run(
                 # image="algocode/cpp-image",
-                image="simple_cpp", 
+                image="new_cpp:v1", 
+                # image="simple_cpp",
+                # image="cpp-vol-test:latest",
                 volumes={
-                    f"{user_file_parent_dir}/": {
-                        "bind": "/user-codes/cpp/result",
+                    "user_code_files": {
+                        "bind": "/user-codes",
                         "mode": "rw",
                     }
                 },
+                environment=[f"user_file_parent_dir={user_file_parent_dir}"],
                 detach=True,
                 privileged=False,
                 network_disabled=True,
@@ -187,7 +190,6 @@ class CodeContainerHandler:
             # cont.stop(timeout=0)
             # cont.remove()
             pass 
-            
 
         end_time = self.__get_current_time()
         logger.info(
@@ -216,10 +218,11 @@ class CodeContainer(CodeContainerHandler):
               if try block is true, contains the user code run result, including any g++ errors.
               if no compilation error, the output is saved in the output.txt file.
         """
+        user_file_parent_dir = user_file_parent_dir.split("/app/user-files")
 
         # Run the container and get the result.
         container_error_message, data = self._run_container(
-            user_file_parent_dir=user_file_parent_dir, submission_id=submission_id
+            user_file_parent_dir=user_file_parent_dir[1], submission_id=submission_id
         )
 
         return container_error_message, data
@@ -228,7 +231,7 @@ class CodeContainer(CodeContainerHandler):
 # object to import.
 code_container = CodeContainer()
 
-# def test(): 
+# def test():
 #     cont = client.containers.run(image="hello-world:latest", detach=True)
 
 #     cont.reload()
@@ -241,3 +244,15 @@ code_container = CodeContainer()
 
 
 # test()
+
+
+def test_vol(): 
+    v = client.volumes.list()
+    print('v: ', v)
+    a = client.volumes.get("user_code_files")
+    print('\na: ', a)
+    print('volume name: ', a.name)
+    print('\n')
+    print('attr: ', a.attrs)
+
+test_vol()

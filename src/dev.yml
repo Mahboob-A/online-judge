@@ -10,7 +10,7 @@ services:
         - /var/run/docker.sock:/var/run/docker.sock 
         # - /usr/bin/docker:/usr/bin/docker
         - .:/app:z 
-        - judge_data:/app/data 
+        - user_code_files:/app/user-files
     ports:
         - "8000:8000"
     env_file: 
@@ -28,5 +28,5 @@ networks:
     driver: bridge 
 
 volumes:
-  judge_data: 
+  user_code_files: 
     external: true 

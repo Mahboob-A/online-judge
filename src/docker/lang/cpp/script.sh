@@ -1,10 +1,12 @@
 #!/bin/bash 
 
 
-user_files_dir="/user-codes/cpp/result"
+# main volume mount where the code in the volume has been saved. 
+volume_mount="/user-codes"
 
-g++ $user_files_dir/main.cpp -o $user_files_dir/main 
+# user_file_parent_dir= is the full path of the file inside the volume: base-dir/user_codes/lang/uuid
 
+g++ $volume_mount$user_file_parent_dir/main.cpp -o $volume_mount$user_file_parent_dir/main 
 compile_status=$?
 
 if [ $compile_status -ne 0 ]; then 
@@ -13,4 +15,4 @@ if [ $compile_status -ne 0 ]; then
 fi
 
 # run the binary 
-$user_files_dir/main < $user_files_dir/input.txt > $user_files_dir/output.txt 
+$volume_mount$user_file_parent_dir/main < $volume_mount$user_file_parent_dir/input.txt > $volume_mount$user_file_parent_dir/output.txt 
