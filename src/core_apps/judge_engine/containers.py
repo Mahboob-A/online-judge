@@ -12,7 +12,7 @@ from docker.errors import (
 )
 
 from core_apps.judge_engine.exceptions import TimeLimitExceedException
-from core_apps.judge_engine.singleton import SignletonMeta
+from core_apps.judge_engine.singleton import SingletonMeta
 
 
 logger = logging.getLogger(__name__)
@@ -205,7 +205,7 @@ class CodeContainerHandler:
         return container_error_message, data
 
 
-class CodeContainer(CodeContainerHandler, metaclass=SignletonMeta):
+class CodeContainer(CodeContainerHandler, metaclass=SingletonMeta):
     """Container class to spawn docker container to execute user code."""
 
     def run_container(self, user_file_parent_dir: str, submission_id: str = None):
