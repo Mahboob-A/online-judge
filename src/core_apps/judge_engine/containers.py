@@ -1,4 +1,6 @@
-import os, json, logging, time
+import logging, time
+
+from django.core.exceptions import ImproperlyConfigured
 
 import docker
 from docker.errors import (
@@ -12,10 +14,15 @@ from docker.errors import (
 from core_apps.judge_engine.exceptions import TimeLimitExceedException
 
 
-
 logger = logging.getLogger(__name__)
 
 client = docker.from_env()
+
+# try:
+#     from docker import from_env
+#     client = from_env()
+# except ImportError:
+#     raise ImproperlyConfigured("Docker library not installed. Please install 'docker'")
 
 
 class CodeContainerHandler:
@@ -222,4 +229,3 @@ class CodeContainer(CodeContainerHandler):
 
 # object to import.
 code_container = CodeContainer()
-
