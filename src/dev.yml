@@ -14,16 +14,18 @@ services:
         - "8000:8000"
     env_file: 
         - ./.envs/.dev/.django 
-    # networks: 
-    #     - judge-network 
+    expose: 
+      - "8000"
+    networks: 
+        - judge-network 
 
 
 
 
 
-# networks:
-#   judge-network: 
-#     driver: bridge 
+networks:
+  judge-network: 
+    driver: bridge 
 
 volumes:
   user_code_files: 
