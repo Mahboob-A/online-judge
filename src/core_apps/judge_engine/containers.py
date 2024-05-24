@@ -131,6 +131,7 @@ class CodeContainerHandler:
                         "mode": "rw",
                     }
                 },
+                environment=[f"user_file_parent_dir={user_file_parent_dir}"],
                 detach=True,
                 privileged=False,
                 network_disabled=True,

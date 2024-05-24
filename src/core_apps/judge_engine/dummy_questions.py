@@ -1,6 +1,4 @@
-
-
-# few questions with input and testcases to test the engine 
+# few questions with input and testcases to test the engine
 
 two_sum_data = {
     "lang": "cpp",

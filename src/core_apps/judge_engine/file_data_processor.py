@@ -39,15 +39,15 @@ class FileDataProcessorHandler:
 
         user_code_dir = "user_files"
         user_code_base_dir = os.path.join(base_dir, user_code_dir)
-        return user_code_base_dir
+        return user_code_base_dir, base_dir
 
-    def get_user_code_base_dir_with_lang(self, lang: str):
+    def __get_user_code_base_dir_with_lang(self, lang: str):
         """return the base-dir/user_codes/{lang} directory"""
 
-        user_code_base_dir = self.get_user_code_base_dir()
+        user_code_base_dir, judge_volume_mount = self.__get_user_code_base_dir()
         base_dir_with_lang = os.path.join(user_code_base_dir, lang)
 
-        return base_dir_with_lang
+        return base_dir_with_lang, judge_volume_mount
 
     def _process_write_data(
         self,
@@ -67,10 +67,16 @@ class FileDataProcessorHandler:
         success_message = "file-created"
 
         # lang path: base-dir/user_codes/lang/
-        main_lang_dir = self.get_user_code_base_dir_with_lang(lang=lang)
+        main_lang_dir, judge_volume_mount = self.__get_user_code_base_dir_with_lang(
+            lang=lang
+        )
 
         # unique user main dir path: base-dir/user_codes/lang/uuid4
         main_user_file_dir = os.path.join(main_lang_dir, f"{submission_id}")
+
+        print(
+            f"Entrypoint of User's Unique Data Dir Judge Container Mount Point:  {main_user_file_dir}"
+        )
 
         try:
             # create the directories: base-dir/user_codes/lang/uuid4
@@ -185,6 +191,7 @@ class FileDataProcessorHandler:
             output_filepath,
             testcases_filepath,
             success_message,
+            judge_volume_mount,
         )
 
     def _process_del_user_dirs_files(self, filepath: str, submission_id: str):
@@ -287,6 +294,7 @@ class FileDataProcessor(FileDataProcessorHandler):
             return result
 
 
+# Object to process data
 file_processor = FileDataProcessor()
 
 if __name__ == "__main__":
