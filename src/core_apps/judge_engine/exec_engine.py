@@ -11,6 +11,9 @@ from core_apps.judge_engine.file_data_processor import file_processor
 from core_apps.judge_engine.containers import code_container
 from core_apps.judge_engine.compare_testcases import compare_output_and_testcases
 
+from file_data_processor import file_processor
+from containers import code_container
+from compare_testcases import compare_output_and_testcases
 
 
 # to test the RCE Engine Locally.
@@ -95,13 +98,11 @@ def code_exec_engine(user_codes: dict, submission_id: str):
                 data:{status_code, status, success_message, error_message, {data:None{result: result, verdict}}
     """
     # write the user codes in file system
-    result = file_processor.write_data(
-        data=user_codes, submission_id=submission_id
-    )  # pass and submission the code here.
+    result = file_processor.write_data(data=user_codes, submission_id=submission_id)
 
     write_success = result[0]
 
-    # data write in filesystem is successful.
+    # if not None: data write in filesystem is successful.
     if write_success is not None:
         (
             code_filepath,
@@ -109,13 +110,19 @@ def code_exec_engine(user_codes: dict, submission_id: str):
             output_filepath,
             testcases_flepath,
             file_write_message,
+            judge_volume_mount,
         ) = result[1:]
 
         # code_filepath:  base-dir/user_codes/lang/uuid/main.cpp
         # parent_dir:  base-dir/user_codes/lang/uuid
+        # /app/user-files/user_codes/cpp/uuid
         parent_dir = os.path.dirname(code_filepath)
 
-        # create the container, run the user code, compare the testcases, and get the result dict.
+        # parent_dir after split: /user_codes/cpp/uuid
+        # in sibling container, data is available at: $sibling_volume_mount/splited_parent_dir
+        parent_dir = parent_dir.split(judge_volume_mount)[1]
+
+        # create the container, run the user code, and get the result dict.
         container_error_message, data = code_container.run_container(
             user_file_parent_dir=parent_dir, submission_id=submission_id
         )
@@ -168,9 +175,9 @@ def code_exec_engine(user_codes: dict, submission_id: str):
                 return container_error_message
 
         #  Delete the created files before returning the result. pass any filepath to delete all the files along with the unique uuid user dir.
-        # file_processor.del_user_dirs_files(
-        #     filepath=code_filepath, submission_id=submission_id
-        # )
+        file_processor.del_user_dirs_files(
+            filepath=code_filepath, submission_id=submission_id
+        )
         return return_data
 
     else:  # data write in file system is unsuccessfu.
