@@ -1,0 +1,17 @@
+# Use the official Python image from the Docker Hub
+FROM python:3.10-bullseye
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements file into the container
+COPY ./requirements .
+
+# Install the dependencies
+# RUN pip install --no-cache-dir -r ./requirements/dev.txt 
+
+# Copy the rest of the application code
+COPY . .
+
+# Set the entry point to run the Django development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

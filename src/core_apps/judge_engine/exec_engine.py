@@ -1,6 +1,5 @@
 # exec_engine.py | run rce engine locally without http request from here.
 
-import docker
 from django.http import JsonResponse
 
 # from .models import CodeSubmission
@@ -11,6 +10,8 @@ import os, json, time, logging
 from core_apps.judge_engine.file_data_processor import file_processor
 from core_apps.judge_engine.containers import code_container
 from core_apps.judge_engine.compare_testcases import compare_output_and_testcases
+
+
 
 # to test the RCE Engine Locally.
 from core_apps.judge_engine.dummy_questions import (
@@ -167,9 +168,9 @@ def code_exec_engine(user_codes: dict, submission_id: str):
                 return container_error_message
 
         #  Delete the created files before returning the result. pass any filepath to delete all the files along with the unique uuid user dir.
-        file_processor.del_user_dirs_files(
-            filepath=code_filepath, submission_id=submission_id
-        )
+        # file_processor.del_user_dirs_files(
+        #     filepath=code_filepath, submission_id=submission_id
+        # )
         return return_data
 
     else:  # data write in file system is unsuccessfu.

@@ -18,10 +18,12 @@ class FileDataProcessorHandler:
     def get_user_code_base_dir(self):
         """return the base-dir/user_codes directory"""
 
+        # TODO change to django path in prod
         base_dir = settings.BASE_DIR
+        # base_dir = os.getcwd()
         logger.info(f"base dir: {base_dir}")
 
-        user_code_dir = "user_codes"
+        user_code_dir = "user_files"
         user_code_base_dir = os.path.join(base_dir, user_code_dir)
         return user_code_base_dir
 
@@ -52,9 +54,10 @@ class FileDataProcessorHandler:
 
         # lang path: base-dir/user_codes/lang/
         main_lang_dir = self.get_user_code_base_dir_with_lang(lang=lang)
-
+        print('main path: ', main_lang_dir)
         # unique user main dir path: base-dir/user_codes/lang/uuid4
         main_user_file_dir = os.path.join(main_lang_dir, f"{submission_id}")
+        print('main user dir: ', main_user_file_dir)
 
         try:
             # create the directories: base-dir/user_codes/lang/uuid4
@@ -124,6 +127,7 @@ class FileDataProcessorHandler:
             )
             return None, error_message
 
+        print("code_filepath: ", code_filepath)
         # write the input data in the file: base-dir/user_codes/cpp/uuid/input.txt
         try:
             with open(input_filepath, "w") as f:
