@@ -1,26 +1,48 @@
 # views.py
+
+
+from django.http import JsonResponse
+from django.core.exceptions import ImproperlyConfigured
+
+from rest_framework.views import APIView
+
 import tempfile
 import uuid
 import os, json, time, random
-
-from django.core.exceptions import ImproperlyConfigured
-from django.http import JsonResponse
-from rest_framework.views import APIView
-
-# try:
-#     from docker import from_env
-#     from docker.errors import ContainerError
-# except ImportError:
-#     raise ImproperlyConfigured("Docker library not installed. Please install 'docker'")
 
 
 from core_apps.judge_engine.file_data_processor import file_processor
 from core_apps.judge_engine.containers import code_container
 from core_apps.judge_engine.exec_engine import code_exec_engine
 
+# import docker
+# try:
+#     from docker import from_env
+# except ImportError:
+#     raise ImproperlyConfigured("Docker library not installed. Please install 'docker'")
 
 
+class CodeSubmitRobustAPI(APIView):
+    """An API to test the robust implementation of the Online Judge.
 
+    and compare the time with simple implementation
+    """
+
+    def post(self, request):
+        """Submit code to execute in secure docker container."""
+
+        lang = request.data.get("lang")
+        code = request.data.get("code")
+        input_file = request.data.get("input")
+        testcases = request.data.get("testcases")
+
+        submission_id = uuid.uuid4()
+        data = code_exec_engine(user_codes=request.data, submission_id=submission_id)
+
+        return JsonResponse({"submission_id": submission_id, "data": data}, status=200)
+
+
+# #Use the above API for full implementation.
 # class CodeSubmitSimpleImplementation(APIView):
 #     """A simple approach to test the code submission without creating the files beforehand.
 #     In this use case, the host volume creation also handled by docker.
@@ -47,10 +69,14 @@ from core_apps.judge_engine.exec_engine import code_exec_engine
 #         print("curr path: ", os.getcwd())
 #         new_file_path = os.path.join(curr_path, file_path)
 
+#         # About image: simple_cpp
+#         # Image name, just the g++ compiler.
+#         # create a Dockerfile with this only: FROM gcc:12.3.0
+#         # and create an image using it and name it as "simple_cpp"
 #         try:
 #             # Create and start a container
 #             container = client.containers.run(
-#                 "simple_cpp",  # Image name
+#                 "simple_cpp",
 #                 volumes={
 #                     f"{new_file_path}/": {
 #                         "bind": "/user-files",
@@ -85,7 +111,7 @@ from core_apps.judge_engine.exec_engine import code_exec_engine
 #             # Return output to the user
 #             return JsonResponse({"output": output})
 
-#         except ContainerError as e:
+#         except docker.errors.ContainerError as e:
 #             print(f"Error: {e}")
 #             return JsonResponse({"error": str(e)}, status=500)
 #         except Exception as e:
@@ -93,28 +119,3 @@ from core_apps.judge_engine.exec_engine import code_exec_engine
 #             return JsonResponse({"error": "An unexpected error occurred"}, status=500)
 
 #         # return JsonResponse({"error": "Method not allowed"}, status=405)
-
-
-class CodeSubmitRobustAPI(APIView):
-    """An API to test the robust implementation of the Online Judge.
-
-    and compare the time with simple implementation
-    """
-
-    def post(self, request):
-        """Submit code to execute in secure docker container."""
-
-        lang = request.data.get("lang")
-        code = request.data.get("code")
-        input_file = request.data.get("input")
-        testcases = request.data.get("testcases")
-
-
-        
-        print('data: ', request.data)
-        
-
-        submission_id = uuid.uuid4()
-        data = code_exec_engine(user_codes=request.data, submission_id=submission_id)
-
-        return JsonResponse({"submission_id": submission_id, "data": data}, status=200)
