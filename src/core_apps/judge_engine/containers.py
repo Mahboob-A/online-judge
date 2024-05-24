@@ -181,9 +181,8 @@ class CodeContainerHandler:
         except Exception as e:
             container_error_message = f"\nUnexpected Error Occurred: \n{str(e)}"
         finally:
-            # cont.stop(timeout=0)
-            # cont.remove()
-            pass 
+            cont.stop(timeout=0)
+            cont.remove()
 
         end_time = self.__get_current_time()
         logger.info(

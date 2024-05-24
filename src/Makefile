@@ -1,5 +1,5 @@
-dup: 
+docker-up: 
 	docker compose -f dev.yml up --build -d --remove-orphans 
 
-ddown: 
+docker-down: 
 	docker compose -f dev.yml down
