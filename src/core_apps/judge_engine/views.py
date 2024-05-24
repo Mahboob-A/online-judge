@@ -109,17 +109,7 @@ class CodeSubmitRobustAPI(APIView):
         input_file = request.data.get("input")
         testcases = request.data.get("testcases")
 
-        # print('lang: ', lang)
-        # print("code: ", code)
-        # print("input file ", input_file)
-        # print("testcases: ", testcases)
 
-        # print('request.data: ', request.data)
-        # print('\ntype of requst.data: ', type(request.data))
-
-        # print('\ntype of code: ', type(code))
-        # print('\ntype of input: ', type(input_file))
-        # print('lang: ', lang)
         
         print('data: ', request.data)
         
