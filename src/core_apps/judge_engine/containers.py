@@ -12,7 +12,6 @@ from docker.errors import (
 from core_apps.judge_engine.exceptions import TimeLimitExceedException
 
 
-
 logger = logging.getLogger(__name__)
 
 client = docker.from_env()
@@ -117,9 +116,7 @@ class CodeContainerHandler:
         security_opt = ["seccomp=default"]
         try:
             cont = client.containers.run(
-                # image="algocode/cpp-image",
-                image="simple_cpp", 
-                # image="algo/new_cpp", 
+                image="algocode/cpp-image:latest",
                 volumes={
                     f"{user_file_parent_dir}/": {
                         "bind": "/user_codes/cpp/result",
@@ -157,9 +154,6 @@ class CodeContainerHandler:
             cont.reload()
             logs = cont.logs().decode("utf-8")
             status_code = result.get("StatusCode")
-            print('logs: ', logs)
-            print('status code: ', status_code)
-            print('attr: ', cont.attrs)
 
             # formatted data. as control here, the code compiled and run.
             data = self.__get_formated_data(status_code=status_code, logs=logs)
@@ -185,10 +179,8 @@ class CodeContainerHandler:
         except Exception as e:
             container_error_message = f"\nUnexpected Error Occurred: \n{str(e)}"
         finally:
-            # cont.stop(timeout=0)
-            # cont.remove()
-            pass 
-            
+            cont.stop(timeout=0)
+            cont.remove()
 
         end_time = self.__get_current_time()
         logger.info(
@@ -228,5 +220,3 @@ class CodeContainer(CodeContainerHandler):
 
 # object to import.
 code_container = CodeContainer()
-
-
