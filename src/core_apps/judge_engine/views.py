@@ -43,15 +43,15 @@ class CodeSubmitRobustAPI(APIView):
 
 
 # #Use the above API for full implementation.
-class CodeSubmitSimpleImplementation(APIView):
-    """A simple approach to test the code submission without creating the files beforehand.
-    In this use case, the host volume creation also handled by docker.
-    The volume created in host by docker has permission only of docker, hence the files can not be deleted by host user.
+# class CodeSubmitSimpleImplementation(APIView):
+#     """A simple approach to test the code submission without creating the files beforehand.
+#     In this use case, the host volume creation also handled by docker.
+#     The volume created in host by docker has permission only of docker, hence the files can not be deleted by host user.
 
-    The time is also same as the robust implementation of creating files beforehand. Infact, this method takes one second more
-    one average than the robust implementation.
+#     The time is also same as the robust implementation of creating files beforehand. Infact, this method takes one second more
+#     one average than the robust implementation.
 
-    """
+#     """
 
     # def post(self, request):
     #     start = time.time()
