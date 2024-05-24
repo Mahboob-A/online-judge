@@ -6,7 +6,7 @@ import shutil
 
 from django.conf import settings
 
-from core_apps.judge_engine.singleton import SignletonMeta
+from core_apps.judge_engine.singleton import SingletonMeta
 
 logger = logging.getLogger(__name__)
 
@@ -34,8 +34,8 @@ class FileDataProcessorHandler:
             As both has the mount point name same. 
         """
 
-        # this is the volume mount for the main Judge Container as well as sibling contianer. 
-        # see the docker compose file for main judge container, and "containers" module for sibling container. 
+        # this is the volume mount for the main Judge Container as well as sibling contianer.
+        # see the docker compose file for main judge container, and "containers" module for sibling container.
         base_dir = "/app/user-files"
 
         logger.info(f"base dir: {base_dir}")
@@ -230,7 +230,7 @@ class FileDataProcessorHandler:
             return False
 
 
-class FileDataProcessor(FileDataProcessorHandler, metaclass=SignletonMeta):
+class FileDataProcessor(FileDataProcessorHandler, metaclass=SingletonMeta):
     """Write user code in service container file system.
     The image takes the files from service container to compile the code
     """

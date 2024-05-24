@@ -3,7 +3,7 @@
 
 import os, logging
 
-from core_apps.judge_engine.singleton import SignletonMeta
+from core_apps.judge_engine.singleton import SingletonMeta
 from core_apps.judge_engine.file_data_processor import FileDataProcessor
 from core_apps.judge_engine.containers import CodeContainer
 from core_apps.judge_engine.compare_testcases import TestcaseCompare
@@ -58,7 +58,7 @@ class CodeExecutionEngineHandler:
                 code_filepath,
                 input_filepath,
                 output_filepath,
-                testcases_flepath,
+                testcases_filepath,
                 file_write_message,
             ) = result[1:]
 
@@ -86,7 +86,7 @@ class CodeExecutionEngineHandler:
                 if status_code == 0:
                     verdict = TestcaseCompare.compare_output_and_testcases(
                         output_filepath=output_filepath,
-                        testcases_filepath=testcases_flepath,
+                        testcases_filepath=testcases_filepath,
                     )
                     return_data = self.__get_formatted_messages(
                         status_code=status_code,
@@ -131,7 +131,7 @@ class CodeExecutionEngineHandler:
             return f"File Write Error: {error_message}"
 
 
-class CodeExecutionEngine(CodeExecutionEngineHandler, metaclass=SignletonMeta):
+class CodeExecutionEngine(CodeExecutionEngineHandler, metaclass=SingletonMeta):
     """Main Entrypoint for the Code Execution Engine
     CodeExecutionEngine is a Singleton class. 
     """

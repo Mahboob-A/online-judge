@@ -1,7 +1,7 @@
 import threading
 
 
-class SignletonMeta(type):
+class SingletonMeta(type):
     """A meta class for making a class as Singleton."""
 
     _instances = {}
